@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager, db
 from flask.ext.login import UserMixin
 from flask import current_app
-from itsdangerous import TimedJSONWebSignatureSerizalizer as Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 class Role(db.Model):
     __tablename__ = 'roles'
