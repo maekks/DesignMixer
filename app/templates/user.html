@@ -35,4 +35,8 @@
     {% endif %}
     </div>
 </div>
+<div class="page-posts">
+    <h3>Posts by {{ user.username }}</h3>
+    {% include '_posts.html' %}
+</div>
 {% endblock %}
