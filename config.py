@@ -10,6 +10,7 @@ class Config:
     MIXER_ADMIN = os.environ.get('MIXER_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     POSTS_PER_PAGE = 20
+    FOLLOWERS_PER_PAGE = 20
 
     @staticmethod
     def init_app(app):
