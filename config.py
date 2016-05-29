@@ -3,11 +3,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 #common config for all environment
 class Config:
+    SSL_DISABLE = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'DESIGNMIXER'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     DESIGNMIXER_MAIL_SUBJECT_PREFIX = '[DesignerMixer]'
     DESIGNMIXER_MAIL_SENDER = 'DesignerMixer Admin <hi@maxlee.im>'
-    MIXER_ADMIN = os.environ.get('MIXER_ADMIN')
+    MIXER_ADM IN = os.environ.get('MIXER_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     POSTS_PER_PAGE = 20
     FOLLOWERS_PER_PAGE = 20
@@ -61,11 +62,33 @@ class ProductionConfig(Config):
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
+class HerokuConfig(ProductionConfig):
+    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+
+        # handle proxy server headers
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
+        # log to stderr
+        import logging
+        from logging import StreamHandler
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.WARNING)
+        app.logger.addHandler(file_handler)
+
+        from werkzeug.contrib.fixer import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
 #dictionary for create_app to choose config
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
+    'heroku': HerokuConfig,
 
     #DevelopmentConfig is the default config
     'default': DevelopmentConfig
