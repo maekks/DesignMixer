@@ -51,6 +51,7 @@ def deploy():
     from app.models import Role, User
 
     upgrade()
+    
     Role.insert_roles()
     User.add_self_follows()
 
