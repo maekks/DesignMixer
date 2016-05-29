@@ -80,7 +80,7 @@ class HerokuConfig(ProductionConfig):
         file_handler.setLevel(logging.WARNING)
         app.logger.addHandler(file_handler)
 
-        from werkzeug.contrib.fixer import ProxyFix
+        from werkzeug.contrib.fixers import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app)
 
 #dictionary for create_app to choose config
