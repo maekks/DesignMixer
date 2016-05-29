@@ -48,7 +48,7 @@ def test(coverage=False):
 def deploy():
     """run deployment tasks."""
     from flask.ext.migrate import upgrade
-    from app.models import Role, user
+    from app.models import Role, User
 
     upgrade()
     Role.insert_roles()
