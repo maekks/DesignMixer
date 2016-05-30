@@ -11,9 +11,7 @@ from flask.ext.pagedown import PageDown
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
-db = SQLAlchemy(app, session_options{
-    'expire_on_commit': False
-})
+db = SQLAlchemy()
 pagedown = PageDown()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
