@@ -48,9 +48,8 @@ def test(coverage=False):
 def deploy():
     from flask.ext.migrate import upgrade
     from app.models import Role, User
-    from app import db
-    db.drop_all()
-    db.create_all()
+
+    upgrade()
 
     Role.insert_roles()
     User.add_self_follows()
