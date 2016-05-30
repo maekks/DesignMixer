@@ -51,7 +51,6 @@ def deploy():
     from app import db
     db.drop_all()
     db.create_all()
-    upgrade()
 
     Role.insert_roles()
     User.add_self_follows()
