@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 #common config for all environment
 class Config:
-    SSL_DISABLE = True
+    # SSL_DISABLE = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'DESIGNMIXER'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     DESIGNMIXER_MAIL_SUBJECT_PREFIX = '[DesignerMixer]'
@@ -63,7 +63,7 @@ class ProductionConfig(Config):
         app.logger.addHandler(mail_handler)
 
 class HerokuConfig(ProductionConfig):
-    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+    # SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
 
     @classmethod
     def init_app(cls, app):
@@ -91,5 +91,5 @@ config = {
     'heroku': HerokuConfig,
 
     #DevelopmentConfig is the default config
-    'default': DevelopmentConfig
+    'default': HerokuConfig
 }
