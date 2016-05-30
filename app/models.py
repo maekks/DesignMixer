@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager, db
 from flask.ext.login import UserMixin, AnonymousUserMixin
-from flask import current_app, request
+from flask import current_app, request, url_for
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 import hashlib
@@ -49,8 +49,10 @@ class Role(db.Model):
 
 class Follow(db.Model):
     __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                            primary_key = True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                            primary_key = True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 class User(UserMixin, db.Model):
@@ -83,15 +85,16 @@ class User(UserMixin, db.Model):
     #constructor of the User class
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
-        self.follow(self)
-        if self.email is not None and self.avatar_hash is None:
-            self.avatar_hash = hashlib.md5(
-                self.email.encode('utf-8')).hexdigest()
         if self.role is None:
             if self.email == current_app.config['MIXER_ADMIN']:
                 self.role = Role.query.filter_by(permissions=0xff).first()
             else:
                 self.role = Role.query.filter_by(default=True).first()
+        if self.email is not None and self.avatar_hash is None:
+            self.avatar_hash = hashlib.md5(
+                self.email.encode('utf-8')).hexdigest()
+        self.followed.append(Follow(followed=self))
+
 
     @property
     def followed_posts(self):
@@ -209,10 +212,12 @@ class User(UserMixin, db.Model):
             db.session.delete(f)
 
     def is_following(self, user):
-        return self.followed.filter_by(followed_id=user.id).first() is not None
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
-        return self.followers.filter_by(follower_id=user.id).first() is not None
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
 
 
     def __repr__(self):
