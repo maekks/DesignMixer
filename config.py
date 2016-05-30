@@ -91,5 +91,5 @@ config = {
     'heroku': HerokuConfig,
 
     #DevelopmentConfig is the default config
-    'default': HerokuConfig
+    'default': DevelopmentConfig
 }
